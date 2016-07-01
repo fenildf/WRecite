@@ -1,0 +1,25 @@
+CREATE TABLE words(
+    word text,
+    create_time datetime
+);
+CREATE UNIQUE INDEX words_idx ON words(word);
+
+
+CREATE TABLE tags(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name CHAR(64),
+    count INT default 0,
+    create_time datetime default  (datetime('now', 'localtime'))
+);
+
+CREATE TABLE tag_words(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tag_id int,
+    word varchar(64),
+    create_time datetime default  (datetime('now', 'localtime'))
+);
+CREATE UNIQUE INDEX tag_word_idx ON tag_words(tag_id,word);
+
+
+# ALTER TABLE tag_words RENAME TO tag_words_old;
+#insert into tag_words (tag_id, word) select tag_id,word from tag_words_old;
