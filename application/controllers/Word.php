@@ -24,17 +24,27 @@ class WordController extends Yaf_Controller_Abstract {
         }
 
         if ($word) {
-            $this->loadAudio($word);
-            $this->saveDb($word);
+            $this->importWord($word);
             $sql = "insert into tag_words(tag_id, word) values($tagid, '${word}')";
-            $this->daoWords->query($sql);
+            $this->daoWords->exec($sql);
         }
-        $sql = "select * from tag_words where tag_id=$tagid order by id";
+        $sql = "select w.word,w.interpretation from tag_words as t join words as w on w.word=t.word where t.tag_id=$tagid order by t.id";
         $rows = $this->daoWords->query($sql);
+        foreach ($rows as $rKey => $row) {
+            if (!$row['interpretation']) {
+                continue;
+            }
+            $interpretation = json_decode($row['interpretation'], true);
+            $s = array();
+            foreach ($interpretation as $key => $val) {
+                $s[] = $key.' : '.$val;
+            }
+            $rows[$rKey]['interpretation'] = implode("<br />\n", $s);
+        }
+
         $data = array('rows'=>$rows);
         $this->getView()->display('word/tag.php', $data);
     }
-
 
     public function listAction() {
         $sql = 'select * from words;';
@@ -50,8 +60,7 @@ class WordController extends Yaf_Controller_Abstract {
     public function addAction() {
         $word = $this->getRequest()->getQuery('w');
 
-        $this->loadAudio($word);
-        $this->saveDb($word);
+        $this->importWord($word);
 
         $ret = array(
             'code' => 0,
@@ -61,30 +70,31 @@ class WordController extends Yaf_Controller_Abstract {
         echo json_encode($ret);
     }
 
-    private function saveDb($word) {
+    private function importWord($word) {
+        $icibaDao = new Dao_Iciba();
+        $wordHtml = $icibaDao->getWordHtml($word);
+
+        // 下载音频文件
+        $audioUrls = $this->parseMp3Url($wordHtml);
+        $audioBasePath = Util_Config::get('words/audioPath');
+        $this->downloadAudio($audioUrls[0], $audioBasePath.'/uk/'.substr($word,0,2).'/'.$word.'.mp3');
+        $this->downloadAudio($audioUrls[1], $audioBasePath.'/us/'.substr($word,0,2).'/'.$word.'.mp3');
+
+        // 插入数据库
+        $desc = $this->paraseDesc($wordHtml);
         $time = date('Y-m-d H:i:s');
         try {
             $rows = $this->daoWords->query("select * from words where word='$word'");
             if (count($rows)>0) {
                 return true;
             }
-            $ret = $this->daoWords->query("insert into words values('$word', '$time')");
+            $interpretation = json_encode($desc);
+            $ret = $this->daoWords->exec("insert into words values('$word', '$time', '$interpretation')");
         } catch (Throwable $e) {
             var_dump($e);
         }
-        return $ret;
-    }
 
-    private function loadAudio($word) {
-        $icibaDao = new Dao_Iciba();
-        $wordHtml = $icibaDao->getWordHtml($word);
-        $audioUrls = $this->parseMp3Url($wordHtml);
-
-        $audioBasePath = Util_Config::get('words/audioPath');
-
-        $this->downloadAudio($audioUrls[0], $audioBasePath.'/uk/'.substr($word,0,2).'/'.$word.'.mp3');
-        $this->downloadAudio($audioUrls[1], $audioBasePath.'/us/'.substr($word,0,2).'/'.$word.'.mp3');
-
+        return true;
     }
 
     private function parseMp3Url($html) {
@@ -100,6 +110,20 @@ class WordController extends Yaf_Controller_Abstract {
             if (strlen($match[0])>10) {
                 $ret[] = $match[0];
             }
+        }
+        return $ret;
+    }
+
+    private function paraseDesc($html) {
+        $pattern = "/<ul class='base\-list switch_part' >(.*?)<\/ul>/s";
+        $retCount = preg_match_all($pattern, $html, $matches);
+        $html = str_replace(array(" ","\n","\r", "\t"), '', $matches[1][0]);
+
+        $pattern = "/<spanclass(.*?)>(.*?)<\/span><p>(.*?)<\/p>/s";
+        $retCount = preg_match_all($pattern, $html, $matches);
+        $ret = array();
+        for ($i=0; $i< $retCount; $i++) {
+            $ret[$matches[2][$i]] = $matches[3][$i];
         }
         return $ret;
     }

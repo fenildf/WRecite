@@ -10,15 +10,15 @@ class Dao_Words {
 
     public function query($sql) {
         $result = $this->db->query($sql);
-        if (!$result instanceof SQLite3Result) {
-            return $result;
-        }
         $ret = array();
-        if ($result)
         while($row = $result->fetchArray(SQLITE3_ASSOC)) {
             $ret[] = $row;
         }
         return $ret;
+    }
+
+    public function exec($sql) {
+        return $this->db->exec($sql);
     }
 
 }
