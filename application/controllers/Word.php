@@ -31,18 +31,10 @@ class WordController extends Yaf_Controller_Abstract {
         $sql = "select w.word,w.interpretation from tag_words as t join words as w on w.word=t.word where t.tag_id=$tagid order by t.id";
         $rows = $this->daoWords->query($sql);
         foreach ($rows as $rKey => $row) {
-            if (!$row['interpretation']) {
-                continue;
-            }
-            $interpretation = json_decode($row['interpretation'], true);
-            $s = array();
-            foreach ($interpretation as $key => $val) {
-                $s[] = $key.' : '.$val;
-            }
-            $rows[$rKey]['interpretation'] = implode("<br />\n", $s);
+            $rows[$rKey]['interpretation'] = Util_Format::interpretation($row['interpretation']);
         }
 
-        $data = array('rows'=>$rows);
+        $data = array('words'=>$rows);
         $this->getView()->display('word/tag.php', $data);
     }
 

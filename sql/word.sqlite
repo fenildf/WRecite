@@ -20,6 +20,16 @@ CREATE TABLE tag_words(
 );
 CREATE UNIQUE INDEX tag_word_idx ON tag_words(tag_id,word);
 
+CREATE TABLE forget_word(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    word text,
+    create_time datetime default  (datetime('now', 'localtime')),
+    is_remember boolean default 0
+);
+CREATE  INDEX forget_idx ON words(is_remember,create_time);
+
+
 
 # ALTER TABLE tag_words RENAME TO tag_words_old;
-#insert into tag_words (tag_id, word) select tag_id,word from tag_words_old;
+# insert into tag_words (tag_id, word) select tag_id,word from tag_words_old;
+# alter table words add column interpretation text;
