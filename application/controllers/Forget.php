@@ -9,7 +9,7 @@ class ForgetController extends Yaf_Controller_Abstract {
     public function addAction() {
         $word = $_GET['word'];
         if (!$word) {
-            echo json_encode(array('code'=>1));
+            echo json_encode(array('code'=>2));
             die();
         }
         $sql = "select * from forget_word where word='${word}' and is_remember=0";
@@ -24,6 +24,20 @@ class ForgetController extends Yaf_Controller_Abstract {
 
         $ret = array('code'=>0);
         echo json_encode($ret);
+    }
+
+    public function removeAction() {
+        $word = $_GET['word'];
+        if (!$word) {
+            echo json_encode(array('code'=>2));
+            die();
+        }
+
+        $sql = "update forget_word set is_remember=1 where word='$word'";
+        $this->daoWords->exec($sql);
+
+        $ret = array('code'=>0);
+        echo json_encode($ret);       
     }
 
     public function listAction() {

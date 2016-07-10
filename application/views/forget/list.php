@@ -10,7 +10,7 @@
 
 <br /><br /><br />
 
-<button onclick="dTable.start()">开始默写</button>
+<button onclick="start()">开始默写</button>
 <button onclick="dTable.next()">下一个单词</button>
 <button onclick="dTable.playWord()">重复</button>
 <br />
@@ -27,5 +27,18 @@
     buildTable('forget_word', words);
 
     dTable = new DictationTable('dictation_list', shuffle(words), 'recite_info');
+
+    function start() {
+    dTable.start();
+    $('#dictation_list tr').each(function(index, ele){
+        var $ele = $(ele);
+        var word = $ele.find('.word_value').html();
+
+        var removeButton = '&nbsp;&nbsp;&nbsp;<button onclick="removeForgetWord(\'' + word + '\');">记住了</button>';
+        $ele.find('.panel button').after(removeButton);
+        
+    });
+
+}
 </script>
 </body>
