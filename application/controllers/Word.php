@@ -24,7 +24,8 @@ class WordController extends Yaf_Controller_Abstract {
         }
 
         if ($word) {
-            $this->importWord($word);
+            $wordSource = new WordSource_Iciba($word);
+            $wordSource->import();
             $sql = "insert into tag_words(tag_id, word) values($tagid, '${word}')";
             $this->daoWords->exec($sql);
         }
@@ -52,7 +53,9 @@ class WordController extends Yaf_Controller_Abstract {
     public function addAction() {
         $word = $this->getRequest()->getQuery('w');
 
-        $this->importWord($word);
+        $wordSource = new WordSource_Iciba($word);
+        $wordSource->import();
+
 
         $ret = array(
             'code' => 0,
@@ -60,73 +63,6 @@ class WordController extends Yaf_Controller_Abstract {
             'data' => array(),
         );
         echo json_encode($ret);
-    }
-
-    private function importWord($word) {
-        $icibaDao = new Dao_Iciba();
-        $wordHtml = $icibaDao->getWordHtml($word);
-
-        // 下载音频文件
-        $audioUrls = $this->parseMp3Url($wordHtml);
-        $audioBasePath = Util_Config::get('words/audioPath');
-        $this->downloadAudio($audioUrls[0], $audioBasePath.'/uk/'.substr($word,0,2).'/'.$word.'.mp3');
-        $this->downloadAudio($audioUrls[1], $audioBasePath.'/us/'.substr($word,0,2).'/'.$word.'.mp3');
-
-        // 插入数据库
-        $desc = $this->paraseDesc($wordHtml);
-        $time = date('Y-m-d H:i:s');
-        try {
-            $rows = $this->daoWords->query("select * from words where word='$word'");
-            if (count($rows)>0) {
-                return true;
-            }
-            $interpretation = json_encode($desc);
-            $ret = $this->daoWords->exec("insert into words values('$word', '$time', '$interpretation')");
-        } catch (Throwable $e) {
-            var_dump($e);
-        }
-
-        return true;
-    }
-
-    private function parseMp3Url($html) {
-        $pattern = '/<i class=\'new-speak-step\'(.*?)>/';
-        $retCount = preg_match_all($pattern, $html, $matches);
-        if ($retCount!=2) {
-            throw new Exception('页面解析错误');
-        }
-        $pattern = '/http:\/\/(.*?)\.mp3/';
-        $ret = array();
-        foreach ($matches[1] as $row) {
-            preg_match($pattern, $row, $match);
-            if (strlen($match[0])>10) {
-                $ret[] = $match[0];
-            }
-        }
-        return $ret;
-    }
-
-    private function paraseDesc($html) {
-        $pattern = "/<ul class='base\-list switch_part' >(.*?)<\/ul>/s";
-        $retCount = preg_match_all($pattern, $html, $matches);
-        $html = str_replace(array(" ","\n","\r", "\t"), '', $matches[1][0]);
-
-        $pattern = "/<spanclass(.*?)>(.*?)<\/span><p>(.*?)<\/p>/s";
-        $retCount = preg_match_all($pattern, $html, $matches);
-        $ret = array();
-        for ($i=0; $i< $retCount; $i++) {
-            $ret[$matches[2][$i]] = $matches[3][$i];
-        }
-        return $ret;
-    }
-
-    private function downloadAudio($url, $path) {
-        $dirname = dirname($path);
-        if (!file_exists($dirname)) {
-            mkdir($dirname, 0777, true);
-        }
-        $cmd = "wget $url  --output-document=$path ";
-        exec($cmd);
     }
 
     public function error_handler() {

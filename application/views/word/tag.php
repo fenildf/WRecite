@@ -7,7 +7,7 @@
 </head>
 <body>
 <form action="" method="post">
-    <table style="margin:3px 10px;">
+    <table style="margin:3px 10px;" class="word_table" >
         <tr>
             <td>单词表</td>
             <td><?=$_GET['name']?></td>
@@ -27,7 +27,7 @@
     </table>
 </form>
 <br /><br />
-<table border="1" id="word_list">
+<table border="1" id="word_list" class="word_table">
 </table>
 
 <br /><br />
