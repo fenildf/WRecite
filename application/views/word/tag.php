@@ -7,7 +7,7 @@
 </head>
 <body>
 <form action="" method="post">
-    <table style="margin:3px 10px;" class="word_table" >
+    <table style="margin:3px 10px;" >
         <tr>
             <td>单词表</td>
             <td><?=$_GET['name']?></td>
@@ -37,7 +37,7 @@
 <button onclick="dTable.playWord()">重复</button>
 <br />
 <p id="recite_info"></p>
-<table id="dictation_list" border="1">
+<table id="dictation_list" border="1" class="word_table">
 
 </table>
 <script type='text/javascript' src='http://cdn.iciba.com/web/js/jquery-1.10.2.min.js'></script>
