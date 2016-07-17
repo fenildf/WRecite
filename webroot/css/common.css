@@ -1,0 +1,30 @@
+body{
+    padding: 10px 20px;
+}
+.play_icon {
+    display: inline-block;
+    width: 20px;
+    height: 16px;
+    margin-left: 6px;
+    margin-right: 6px;
+    cursor: pointer;
+    background: url("http://www.iciba.com/static/images/newsearch_ico.png") no-repeat -4px -4px;
+    vertical-align: middle;
+}
+.word_table td{
+    padding:3px 10px;
+}
+.word_table tr:hover{
+    background-color: #B1D7FE;
+}
+.hidden_word {
+    color : #FFFFFF;
+}
+.interpretation {
+    padding:3px 20px;
+    line-height: 1.1;
+}
+.phonetic {
+    line-height: 1.5;
+    width:260px;
+}
