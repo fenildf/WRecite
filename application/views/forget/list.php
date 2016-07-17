@@ -20,7 +20,7 @@
 
 
 
-<script type='text/javascript' src='http://cdn.iciba.com/web/js/jquery-1.10.2.min.js'></script>
+<script type='text/javascript' src='/WRecite/js/jquery-1.10.2.min.js'></script>
 <script type='text/javascript' src='/WRecite/js/common.js'></script>
 <script>
     var words = <?=json_encode($words)?>;
