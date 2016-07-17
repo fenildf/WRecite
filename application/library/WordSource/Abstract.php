@@ -6,6 +6,9 @@ abstract class WordSource_Abstract {
     protected $ukAudio = null;
     protected $usAudio = null;
 
+    protected $phEn = null;
+    protected $phAm = null;
+
     protected $interpretation = null;
     protected $daoWords = null;
 
@@ -33,10 +36,10 @@ abstract class WordSource_Abstract {
         $time = date('Y-m-d H:i:s');
         $rows = $this->daoWords->query("select * from words where word='{$this->word}'");
         if (count($rows)>0) {
-            $sql = "update words set interpretation='{$this->interpretation}' where word='{$this->word}'";
+            $sql = "update words set interpretation='{$this->interpretation}', ph_en='{$this->phEn}', ph_am='{$this->phAm}' where word='{$this->word}'";
             $this->daoWords->exec($sql);
         } else {
-            $sql = "insert into words values('{$this->word}', '{$time}', '{$this->interpretation}')";
+            $sql = "insert into words values('{$this->word}', '{$time}', '{$this->interpretation}', '{$this->phEn}', '{$this->phAm}')";
             $this->daoWords->exec($sql);
         }
     }

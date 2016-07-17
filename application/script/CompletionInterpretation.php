@@ -5,7 +5,7 @@ $app->bootstrap();
 
 $wordsDao = new Dao_Words();
 
-$sql = 'select * from words where interpretation is null';
+$sql = 'select * from words where ph_en is null';
 $rows = $wordsDao->query($sql);
 $count = count($rows);
 foreach ($rows as $index => $row) {

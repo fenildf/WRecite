@@ -33,3 +33,5 @@ CREATE  INDEX forget_idx ON words(is_remember,create_time);
 # ALTER TABLE tag_words RENAME TO tag_words_old;
 # insert into tag_words (tag_id, word) select tag_id,word from tag_words_old;
 # alter table words add column interpretation text;
+alter table words add column ph_en text;
+alter table words add column ph_am text;

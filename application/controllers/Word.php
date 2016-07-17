@@ -29,8 +29,13 @@ class WordController extends Yaf_Controller_Abstract {
             $sql = "insert into tag_words(tag_id, word) values($tagid, '${word}')";
             $this->daoWords->exec($sql);
         }
-        $sql = "select w.word,w.interpretation from tag_words as t join words as w on w.word=t.word where t.tag_id=$tagid order by t.id";
+        $desc = '';
+        if (isset($_GET['sort']) && $_GET['sort']=='desc') {
+            $desc = ' desc';
+        }
+        $sql = "select w.word,w.interpretation,w.ph_en, w.ph_am from tag_words as t join words as w on w.word=t.word where t.tag_id=$tagid order by t.id".$desc;
         $rows = $this->daoWords->query($sql);
+
         foreach ($rows as $rKey => $row) {
             $rows[$rKey]['interpretation'] = Util_Format::interpretation($row['interpretation']);
         }
