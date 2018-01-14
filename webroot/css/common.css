@@ -28,3 +28,18 @@ body{
     line-height: 1.5;
     width:260px;
 }
+#header {
+    margin:5px 10px 20px;
+}
+#header ul {
+    padding:0px;
+}
+#header li {
+    display: block;
+    width:150px;
+    float:left;
+}
+#header a {
+    text-decoration: none;
+    color:#3b99fc;
+}

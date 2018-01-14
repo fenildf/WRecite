@@ -27,7 +27,7 @@ class WordController extends Yaf_Controller_Abstract {
         if ($word) {
             $wordSource = new WordSource_Iciba($word);
             $wordSource->import();
-            $sql = "insert into tag_words(tag_id, word) values($tagid, '${word}')";
+            $sql = "insert or ignore into tag_words(tag_id, word) values($tagid, '${word}')";
             $this->daoWords->exec($sql);
 
             $urls = parse_url($_SERVER['REQUEST_URI']);
@@ -35,9 +35,9 @@ class WordController extends Yaf_Controller_Abstract {
             header("Location: $url");
             die();
         }
-        $desc = '';
-        if (isset($_GET['sort']) && $_GET['sort']=='desc') {
-            $desc = ' desc';
+        $desc = ' desc';
+        if (isset($_GET['sort']) && $_GET['sort']=='asc') {
+            $desc = ' asc';
         }
         $sql = "select w.word,w.interpretation,w.ph_en, w.ph_am from tag_words as t join words as w on w.word=t.word where t.tag_id=$tagid order by t.id".$desc;
         $rows = $this->daoWords->query($sql);
@@ -51,7 +51,7 @@ class WordController extends Yaf_Controller_Abstract {
     }
 
     public function listAction() {
-        $sql = 'select * from words;';
+        $sql = 'select * from words order by create_time desc;';
         $rows = $this->daoWords->query($sql);
         $baseUrl = Util_Config::get('words/audioBashUrl');
 

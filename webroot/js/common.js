@@ -40,7 +40,6 @@ function removeForgetWord(word) {
 }
 
 function buildTable(tableId, words, hidden=false) {
-    console.log(words);
     var $targetTable = $('#' + tableId);
     var len = words.length;
     for (var i=0;i<len ;i++) {
@@ -94,4 +93,11 @@ function DictationTable(tableId, words, info) {
         playAudio(word, 'us');
     }
 
+    var self = this;
+    $(document).keydown(function(event){
+        if(event.keyCode==13) {
+            self.next();
+            event.preventDefault();
+        }
+    });
 }

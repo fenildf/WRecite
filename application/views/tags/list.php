@@ -22,6 +22,7 @@
 
 </head>
 <body>
+    <?php include(VIEW_PATH.'common/header.php');?>
     <table border="1" id="word_table" >
         <?php foreach ($tags as $row) { ?>
             <tr>

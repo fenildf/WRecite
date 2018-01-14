@@ -6,6 +6,8 @@
 
 </head>
 <body>
+<?php include(VIEW_PATH.'common/header.php');?>
+
 <form action="" method="post">
     <table style="margin:3px 10px;" >
         <tr>
@@ -32,7 +34,7 @@
 
 <br /><br />
 <br /><br />
-<button onclick="dTable.start()">开始默写</button>
+<button onclick="dTable.start();">开始默写</button>
 <button onclick="dTable.next()">下一个单词</button>
 <button onclick="dTable.playWord()">重复</button>
 <br />
@@ -47,7 +49,6 @@ var words = <?=json_encode($words)?>;
 buildTable('word_list', words);
 
 dTable = new DictationTable('dictation_list', shuffle(words), 'recite_info');
-
 </script>
 </body>
 </html>

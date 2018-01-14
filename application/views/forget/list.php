@@ -5,6 +5,8 @@
     <link rel='stylesheet' href='/WRecite/css/common.css'/>
 </head>
 <body>
+<?php include(VIEW_PATH.'common/header.php');?>
+
 <table id="forget_word" class="word_table" border='1'>
 </table>
 

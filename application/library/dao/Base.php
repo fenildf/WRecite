@@ -23,10 +23,12 @@ class Dao_Base {
 
     public function execByValues($sql) {
         $args = func_get_args();
+        array_shift($args);
         $sth = $this->db->prepare($sql);
         foreach ($args as $key => $arg) {
             $sth->bindValue($key+1, $arg);
         }
+
         $sth->execute();
     }
 

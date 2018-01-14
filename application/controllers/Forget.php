@@ -33,11 +33,12 @@ class ForgetController extends Yaf_Controller_Abstract {
             die();
         }
 
-        $sql = "update forget_word set is_remember=1 where word='$word'";
+        //$sql = "update forget_word set is_remember=1 where word='$word'";
+        $sql = "delete from forget_word where word='$word'";
         $this->daoWords->exec($sql);
 
         $ret = array('code'=>0);
-        echo json_encode($ret);       
+        echo json_encode($ret);
     }
 
     public function listAction() {

@@ -22,6 +22,7 @@
 
 </head>
 <body>
+    <?php include(VIEW_PATH.'common/header.php');?>
     <form>
         <input type="text" id="word_input" /> <input type="submit">
     </form>
