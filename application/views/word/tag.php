@@ -10,7 +10,7 @@
     <table style="margin:3px 10px;" >
         <tr>
             <td>单词表</td>
-            <td><?=$_GET['name']?></td>
+            <td><?=$_GET['name']?>&nbsp;&nbsp;(<?=$taginfo['id']?>)</td>
         </tr>
         <tr>
             <td>单词数</td>

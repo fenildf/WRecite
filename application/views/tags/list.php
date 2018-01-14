@@ -22,24 +22,19 @@
 
 </head>
 <body>
-    <form>
-        <input type="text" id="word_input" /> <input type="submit">
-    </form>
-
     <table border="1" id="word_table" >
-        <?php foreach ($rows as $row) { ?>
+        <?php foreach ($tags as $row) { ?>
             <tr>
-            <td><?=$row['word']?></td>
+            <td><a href="/WRecite/word/tag?name=<?=$row['name']?>"><?=$row['id']?></a></td>
+            <td><a href="/WRecite/word/tag?name=<?=$row['name']?>"><?=$row['name']?></a></td>
             <td><?=$row['create_time']?></td>
-            <td>
-                <i class="play_icon" onmouseover="playAudio('<?=$row['word']?>','uk');"></i> 英音
-                &nbsp;&nbsp;&nbsp;
-                <i class="play_icon" onmouseover="playAudio('<?=$row['word']?>','us');"></i> 美音
-            </td>
             </tr>
         <?php } ?>
     </table>
+    <br /><br />
+    <form action="" method="POST">
+        <input type="text" name="name"  autocomplete="off"/></td>
+        <input type="submit" value='添加'>
+    </form>
 </body>
 </html>
-
-

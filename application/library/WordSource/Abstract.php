@@ -31,16 +31,26 @@ abstract class WordSource_Abstract {
 
         $this->downloadAudio($this->usAudio, $usAudioFilePath);
         $this->downloadAudio($this->ukAudio, $ukAudioFilePath);
-
         // 存数据库
         $time = date('Y-m-d H:i:s');
         $rows = $this->daoWords->query("select * from words where word='{$this->word}'");
         if (count($rows)>0) {
             $sql = "update words set interpretation='{$this->interpretation}', ph_en='{$this->phEn}', ph_am='{$this->phAm}' where word='{$this->word}'";
+            $sql = "update words set interpretation=?, ph_en=?, ph_am=? where word=?";
+            $this->daoWords->execByValues(
+                $sql,
+                $this->interpretation,
+                $this->phEn, $this->phAm,
+                $this->word
+            );
             $this->daoWords->exec($sql);
         } else {
-            $sql = "insert into words values('{$this->word}', '{$time}', '{$this->interpretation}', '{$this->phEn}', '{$this->phAm}')";
-            $this->daoWords->exec($sql);
+            $sql = 'insert into words(word,create_time, interpretation, ph_en, ph_am) values(?, ?, ?, ?, ?)';
+            $this->daoWords->execByValues(
+                $sql,
+                $this->word, $time, $this->interpretation,
+                $this->phEn, $this->phAm
+            );
         }
     }
 

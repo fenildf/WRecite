@@ -41,7 +41,7 @@ class ForgetController extends Yaf_Controller_Abstract {
     }
 
     public function listAction() {
-        $sql = 'select w.word, w.interpretation from forget_word as f join words as w on w.word=f.word where f.is_remember=0';
+        $sql = 'select w.word, w.interpretation, w.ph_en, w.ph_am from forget_word as f join words as w on w.word=f.word where f.is_remember=0';
         $rows = $this->daoWords->query($sql);
         foreach ($rows as $rKey => $row) {
             $rows[$rKey]['interpretation'] = Util_Format::interpretation($row['interpretation']);

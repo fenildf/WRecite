@@ -17,17 +17,23 @@ class WordController extends Yaf_Controller_Abstract {
         }
         $sql = "select * from tags where name='$name' ";
         $rows = $this->daoWords->query($sql);
-        $tagid = $rows[0]['id'];
         if (count($rows)==0) {
             echo "name 错误！";
             die();
         }
+        $taginfo = $rows[0];
+        $tagid = $rows[0]['id'];
 
         if ($word) {
             $wordSource = new WordSource_Iciba($word);
             $wordSource->import();
             $sql = "insert into tag_words(tag_id, word) values($tagid, '${word}')";
             $this->daoWords->exec($sql);
+
+            $urls = parse_url($_SERVER['REQUEST_URI']);
+            $url = 'http://'.$_SERVER['HTTP_HOST'].$urls['path'].'?'.$urls['query'];
+            header("Location: $url");
+            die();
         }
         $desc = '';
         if (isset($_GET['sort']) && $_GET['sort']=='desc') {
@@ -40,7 +46,7 @@ class WordController extends Yaf_Controller_Abstract {
             $rows[$rKey]['interpretation'] = Util_Format::interpretation($row['interpretation']);
         }
 
-        $data = array('words'=>$rows);
+        $data = array('words'=>$rows, 'taginfo'=>$taginfo,);
         $this->getView()->display('word/tag.php', $data);
     }
 
@@ -58,7 +64,7 @@ class WordController extends Yaf_Controller_Abstract {
     public function addAction() {
         $word = $this->getRequest()->getQuery('w');
 
-        $wordSource = new WordSource_Iciba($word);
+        $wordSource = new WordSource_Youdao($word);
         $wordSource->import();
 
 
