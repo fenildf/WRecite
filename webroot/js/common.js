@@ -90,13 +90,17 @@ function DictationTable(tableId, words, info) {
     this.playWord = function() {
         var tr = $('#'+this.tableId + ' tr').get(this.nowIndex);
         var word = $(tr).children('td').eq(1).text();
-        playAudio(word, 'us');
+        playAudio(word, 'uk');
     }
 
     var self = this;
     $(document).keydown(function(event){
         if(event.keyCode==13) {
             self.next();
+            event.preventDefault();
+        }
+        if (event.keyCode==32) {
+            self.playWord();
             event.preventDefault();
         }
     });

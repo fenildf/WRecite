@@ -20,6 +20,13 @@ class WordSource_Iciba extends WordSource_Abstract {
 
         $this->phEn = $wordInfo['baesInfo']['symbols'][0]['ph_en'];
         $this->phAm = $wordInfo['baesInfo']['symbols'][0]['ph_am'];
+        $phOther = $wordInfo['baesInfo']['symbols'][0]['ph_other'];
+        if (!$this->phEn && $phOther) {
+            $this->phEn = $phOther;
+        }
+        if (!$this->phAm && $phOther) {
+            $this->phAm = $phOther;
+        }
 
         $parts = array();
         foreach ($wordInfo['baesInfo']['symbols'][0]['parts'] as $row) {
